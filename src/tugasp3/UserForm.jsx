@@ -1,3 +1,4 @@
+// UserForm.jsx
 import { useState } from "react";
 import InputField from "./components/InputField";
 import SelectField from "./components/SelectField";
@@ -6,115 +7,125 @@ export default function UserForm() {
   const [form, setForm] = useState({
     nama: "",
     email: "",
-    umur: "",
-    pekerjaan: "",
-    status: "",
+    skill: "",
+    jalur: "",
+    komitmen: "",
   });
 
   const [errors, setErrors] = useState({});
-  const [submitted, setSubmitted] = useState(false);
+  const [showResult, setShowResult] = useState(false);
 
   const handleChange = (field, value) => {
     setForm({ ...form, [field]: value });
+    // Reset error saat user mengetik
+    if (errors[field]) setErrors({ ...errors, [field]: "" });
   };
 
   const validate = () => {
     let err = {};
+    // Validasi Nama (3 syarat)
+    if (!form.nama) err.nama = "Nama lengkap tidak boleh kosong";
+    else if (/\d/.test(form.nama)) err.nama = "Nama tidak boleh mengandung angka";
+    else if (form.nama.length < 5) err.nama = "Nama minimal 5 karakter";
 
-    if (!form.nama) err.nama = "Nama wajib diisi";
-    else if (!isNaN(form.nama)) err.nama = "Tidak boleh angka";
-    else if (form.nama.length < 3) err.nama = "Minimal 3 karakter";
+    // Validasi Email (3 syarat)
+    if (!form.email) err.email = "Email wajib diisi";
+    else if (!form.email.includes("@")) err.email = "Gunakan format email yang valid";
+    else if (!form.email.endsWith(".com")) err.email = "Hanya menerima domain .com";
 
-    if (!form.email) err.email = "Email wajib";
-    else if (!form.email.includes("@")) err.email = "Format salah";
-    else if (form.email.length < 5) err.email = "Terlalu pendek";
+    // Validasi Skill (3 syarat)
+    if (!form.skill) err.skill = "Field ini wajib diisi";
+    else if (form.skill.length > 20) err.skill = "Terlalu panjang (maks 20 karakter)";
+    else if (form.skill.length < 2) err.skill = "Terlalu pendek";
 
-    if (!form.umur) err.umur = "Umur wajib";
-    else if (isNaN(form.umur)) err.umur = "Harus angka";
-    else if (form.umur < 18) err.umur = "Minimal 18";
-
-    if (!form.pekerjaan) err.pekerjaan = "Pilih pekerjaan";
-    if (!form.status) err.status = "Pilih status";
+    if (!form.jalur) err.jalur = "Silakan pilih jalur belajar";
+    if (!form.komitmen) err.komitmen = "Pilih komitmen waktu Anda";
 
     setErrors(err);
     return Object.keys(err).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const onSubmit = (e) => {
     e.preventDefault();
     if (validate()) {
-      setSubmitted(true);
+      setShowResult(true);
     }
   };
 
-  return (
-    <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg border border-gray-200">
-      {/* TITLE */}
-      <h2 className="text-xl font-semibold text-center text-gray-800 mb-6">
-        Formulir Data Pengguna
-      </h2>
+  // Cek apakah form sudah terisi (untuk conditional rendering tombol)
+  const isNotEmpty = form.nama && form.email && form.skill && form.jalur && form.komitmen;
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+  return (
+    <div className="space-y-6">
+      <form onSubmit={onSubmit}>
         <InputField
           label="Nama Lengkap"
           type="text"
+          placeholder="Masukkan nama sesuai KTP"
           value={form.nama}
           onChange={(e) => handleChange("nama", e.target.value)}
           error={errors.nama}
         />
 
         <InputField
-          label="Alamat Email"
-          type="text"
+          label="Email Kerja"
+          type="email"
+          placeholder="nama@perusahaan.com"
           value={form.email}
           onChange={(e) => handleChange("email", e.target.value)}
           error={errors.email}
         />
 
         <InputField
-          label="Usia"
+          label="Keahlian Utama"
           type="text"
-          value={form.umur}
-          onChange={(e) => handleChange("umur", e.target.value)}
-          error={errors.umur}
+          placeholder="Contoh: ReactJS, Python, dsb"
+          value={form.skill}
+          onChange={(e) => handleChange("skill", e.target.value)}
+          error={errors.skill}
         />
 
-        <SelectField
-          label="Pekerjaan"
-          value={form.pekerjaan}
-          onChange={(e) => handleChange("pekerjaan", e.target.value)}
-          options={["Programmer", "Designer", "Manager"]}
-          error={errors.pekerjaan}
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <SelectField
+            label="Jalur Belajar"
+            value={form.jalur}
+            onChange={(e) => handleChange("jalur", e.target.value)}
+            options={["Frontend", "Backend", "Fullstack"]}
+            error={errors.jalur}
+          />
 
-        <SelectField
-          label="Status Pernikahan"
-          value={form.status}
-          onChange={(e) => handleChange("status", e.target.value)}
-          options={["Single", "Menikah"]}
-          error={errors.status}
-        />
+          <SelectField
+            label="Komitmen"
+            value={form.komitmen}
+            onChange={(e) => handleChange("komitmen", e.target.value)}
+            options={["Part Time", "Full Time"]}
+            error={errors.komitmen}
+          />
+        </div>
 
-        {/* BUTTON */}
-        <button
-          type="submit"
-          className="w-full py-2.5 rounded-lg bg-gray-800 text-white font-medium hover:bg-gray-900 transition duration-200"
-        >
-          Simpan Data
-        </button>
+        {/* Conditional Rendering Tombol Submit */}
+        {isNotEmpty && (
+          <button
+            type="submit"
+            className="w-full mt-4 py-4 bg-indigo-600 text-white rounded-2xl font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 hover:-translate-y-1 transition-all duration-200"
+          >
+            Selesaikan Pendaftaran
+          </button>
+        )}
       </form>
 
-      {/* HASIL */}
-      {submitted && (
-        <div className="mt-6 p-4 rounded-lg bg-gray-50 border border-gray-200">
-          <h3 className="font-semibold text-gray-700 mb-2">
-            Data Berhasil Disimpan
-          </h3>
-          <p className="text-sm text-gray-600">Nama: {form.nama}</p>
-          <p className="text-sm text-gray-600">Email: {form.email}</p>
-          <p className="text-sm text-gray-600">Umur: {form.umur}</p>
-          <p className="text-sm text-gray-600">Pekerjaan: {form.pekerjaan}</p>
-          <p className="text-sm text-gray-600">Status: {form.status}</p>
+      {/* Tampilan Hasil (Conditional Rendering) */}
+      {showResult && (
+        <div className="mt-8 p-6 bg-emerald-50 border-2 border-emerald-100 rounded-3xl animate-bounce-short">
+          <div className="flex items-center mb-4">
+            <div className="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center text-white mr-3">✓</div>
+            <h3 className="text-emerald-800 font-bold text-lg">Pendaftaran Diterima!</h3>
+          </div>
+          <div className="grid grid-cols-2 gap-y-2 text-sm text-emerald-700">
+            <p className="font-semibold">Nama:</p><p>{form.nama}</p>
+            <p className="font-semibold">Email:</p><p>{form.email}</p>
+            <p className="font-semibold">Jalur:</p><p className="uppercase">{form.jalur}</p>
+          </div>
         </div>
       )}
     </div>
