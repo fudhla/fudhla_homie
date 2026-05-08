@@ -45,7 +45,6 @@ export default function PageHeader({
         {/* VERTICAL DIVIDER */}
         <div className="mx-1 h-8 w-[1px] bg-slate-200" />
 
-        {/* FILTER PERIODE (Yang sudah ada) */}
         <button className="group flex h-11 cursor-pointer items-center gap-3 rounded-xl bg-slate-900 px-4 shadow-lg shadow-slate-200 transition-all hover:bg-slate-800 hover:shadow-none active:scale-95">
           <FiCalendar className="text-blue-400" size={18} />
           <div className="text-left">
