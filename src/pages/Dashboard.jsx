@@ -1,157 +1,118 @@
-import PageHeader from "../components/PageHeader";
-import {
-  FiFileText,
-  FiBox,
-  FiX,
-  FiShoppingBag,
-  FiPlus,
-  FiCheck,
-} from "react-icons/fi";
-import {
-  PieChart,
-  Pie,
-  Cell,
-  LineChart,
-  Line,
-  XAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import { FaUsers, FaMagic, FaCalendarCheck, FaChartLine, FaCircle } from "react-icons/fa";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
+
+const chartData = [
+  { name: "Jan", Facial: 42, Acne: 35, Laser: 12 },
+  { name: "Feb", Facial: 38, Acne: 30, Laser: 10 },
+  { name: "Mar", Facial: 55, Acne: 40, Laser: 15 },
+  { name: "Apr", Facial: 48, Acne: 45, Laser: 12 },
+];
 
 export default function Dashboard() {
-  const pieData = [
-    { name: "Orders", value: 81 },
-    { name: "Growth", value: 22 },
-    { name: "Revenue", value: 62 },
-  ];
-
-  const COLORS = ["#FF6B6B", "#1ABC9C", "#4DA3FF"];
-
-  const chartData = [
-    { day: "Sun", value: 20 },
-    { day: "Mon", value: 40 },
-    { day: "Tue", value: 35 },
-    { day: "Wed", value: 60 },
-    { day: "Thu", value: 45 },
-    { day: "Fri", value: 70 },
-    { day: "Sat", value: 55 },
-  ];
-
   return (
-    <div className="flex min-h-screen bg-gray-100">
-      <div className="flex flex-col flex-1">
-        <main className="p-6">
-          <PageHeader
-            title="Dashboard"
-            breadcrumb="Hi, Samantha. Welcome back to Sedap Admin!"
-          />
+    /* Latar Belakang Utama: Putih Bersih dengan sedikit rona Pink sangat halus */
+    <div className="p-6 bg-[#FDF2F7] min-h-screen text-[#4A1229] font-sans">
+      
+      {/* Header */}
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h1 className="text-2xl font-black tracking-tight text-[#2D0B1A]">Dashboard Glow Care</h1>
+          <p className="text-sm text-[#EC4899] font-medium">Monitoring aktivitas harian klinik kecantikan</p>
+        </div>
+        {/* Tombol Utama: Hot Pink */}
+        <button className="bg-[#EC4899] hover:bg-[#D13D81] text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-[#EC4899]/30 transition-all active:scale-95">
+          + Booking Baru
+        </button>
+      </div>
 
-          {/* STAT CARDS */}
-          <div className="grid grid-cols-4 gap-6 mb-6">
-            {/* CARD 1 */}
-            <div className="bg-white p-5 rounded-xl shadow-sm flex items-center gap-4">
-              <div className="relative w-14 h-14 flex items-center justify-center bg-[#E6F7F2] rounded-full">
-                <FiFileText className="text-[#1ABC9C]" size={22} />
-                <div className="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center bg-red-500 rounded-full">
-                  <FiPlus className="text-white" size={12} />
-                </div>
-              </div>
-              <div>
-                <h2 className="text-xl font-bold">75</h2>
-                <p className="text-sm text-gray-500">Total Orders</p>
-                <span className="text-xs text-green-500">▲ 4% (30 days)</span>
-              </div>
-            </div>
+      {/* Grid Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        {[
+          { l: "Total Pasien", v: "1,284", i: <FaUsers />, c: "text-[#EC4899]" },
+          { l: "Treatment Selesai", v: "42", i: <FaMagic />, c: "text-[#FB7185]" },
+          { l: "Appointment", v: "15", i: <FaCalendarCheck />, c: "text-[#F472B6]" },
+          { l: "Omzet (Hari ini)", v: "8.2M", i: <FaChartLine />, c: "text-[#EC4899]" },
+        ].map((s, idx) => (
+          /* Card: Putih dengan border pink halus */
+          <div key={idx} className="bg-white p-6 rounded-2xl border border-[#EC4899]/10 shadow-sm hover:shadow-md transition-shadow">
+            <div className={`text-xl mb-4 ${s.c}`}>{s.i}</div>
+            <p className="text-[10px] text-[#2D0B1A]/50 uppercase font-bold tracking-[0.15em]">{s.l}</p>
+            <h3 className="text-2xl font-black mt-1 tracking-tight text-[#2D0B1A]">{s.v}</h3>
+          </div>
+        ))}
+      </div>
 
-            {/* CARD 2 */}
-            <div className="bg-white p-5 rounded-xl shadow-sm flex items-center gap-4">
-              <div className="relative w-14 h-14 flex items-center justify-center bg-[#E6F7F2] rounded-full">
-                <FiBox className="text-[#1ABC9C]" size={22} />
-                <div className="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center bg-green-500 rounded-full">
-                  <FiCheck className="text-white" size={12} />
-                </div>
-              </div>
-              <div>
-                <h2 className="text-xl font-bold">357</h2>
-                <p className="text-sm text-gray-500">Total Delivered</p>
-                <span className="text-xs text-green-500">▲ 4% (30 days)</span>
-              </div>
-            </div>
-
-            {/* CARD 3 */}
-            <div className="bg-white p-5 rounded-xl shadow-sm flex items-center gap-4">
-              <div className="relative w-14 h-14 flex items-center justify-center bg-[#E6F7F2] rounded-full">
-                <FiX className="text-red-500" size={22} />
-                <div className="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center bg-red-500 rounded-full">
-                  <FiX className="text-white" size={12} />
-                </div>
-              </div>
-              <div>
-                <h2 className="text-xl font-bold">65</h2>
-                <p className="text-sm text-gray-500">Total Canceled</p>
-                <span className="text-xs text-red-500">▼ 25% (30 days)</span>
-              </div>
-            </div>
-
-            {/* CARD 4 */}
-            <div className="bg-white p-5 rounded-xl shadow-sm flex items-center gap-4">
-              <div className="relative w-14 h-14 flex items-center justify-center bg-[#E6F7F2] rounded-full">
-                <FiShoppingBag className="text-[#1ABC9C]" size={22} />
-                <div className="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center bg-green-500 rounded-full">
-                  <FiCheck className="text-white" size={12} />
-                </div>
-              </div>
-              <div>
-                <h2 className="text-xl font-bold">$128</h2>
-                <p className="text-sm text-gray-500">Total Revenue</p>
-                <span className="text-xs text-red-500">▼ 12% (30 days)</span>
-              </div>
+      {/* Main Content Sections */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        {/* Left: Chart */}
+        <div className="lg:col-span-2 bg-white p-6 rounded-3xl border border-[#EC4899]/10 shadow-sm">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="font-bold text-lg text-[#2D0B1A]">Analisis Treatment Terpopuler</h3>
+            <div className="flex gap-4 text-[10px] font-bold text-[#EC4899]">
+              <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-[#EC4899]"/> FACIAL</div>
+              <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-[#FB7185]"/> ACNE</div>
             </div>
           </div>
-
-          {/* CHART SECTION */}
-          <div className="grid grid-cols-2 gap-4">
-            {/* PIE CHART */}
-            <div className="bg-white p-4 rounded-xl shadow">
-              <h3 className="font-semibold mb-2">Pie Chart</h3>
-              <div className="h-40 flex items-center justify-center">
-                <PieChart width={200} height={150}>
-                  <Pie
-                    data={pieData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={40}
-                    outerRadius={60}
-                    dataKey="value"
-                  >
-                    {pieData.map((entry, index) => (
-                      <Cell key={index} fill={COLORS[index]} />
-                    ))}
-                  </Pie>
-                </PieChart>
-              </div>
-            </div>
-
-            {/* LINE CHART */}
-            <div className="bg-white p-4 rounded-xl shadow">
-              <h3 className="font-semibold mb-2">Order Chart</h3>
-              <div className="h-40">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={chartData}>
-                    <XAxis dataKey="day" />
-                    <Tooltip />
-                    <Line
-                      type="monotone"
-                      dataKey="value"
-                      stroke="#1ABC9C"
-                      strokeWidth={3}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
+          
+          <div className="h-[300px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={chartData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+                {/* Grid Lines: Warna Pink Pucat */}
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#FCE7F3" />
+                <XAxis 
+                  dataKey="name" 
+                  stroke="#4A1229" 
+                  fontSize={11} 
+                  axisLine={false} 
+                  tickLine={false} 
+                  dy={10} 
+                />
+                <YAxis 
+                  stroke="#4A1229" 
+                  fontSize={11} 
+                  axisLine={false} 
+                  tickLine={false} 
+                />
+                <Tooltip 
+                  cursor={{fill: '#FDF2F7'}} 
+                  contentStyle={{backgroundColor: '#FFF', borderRadius: '12px', border: '1px solid #EC4899', fontSize: '12px', color: '#4A1229'}} 
+                />
+                <Bar dataKey="Facial" fill="#EC4899" radius={[6, 6, 0, 0]} barSize={30} />
+                <Bar dataKey="Acne" fill="#FB7185" radius={[6, 6, 0, 0]} barSize={30} />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
-        </main>
+        </div>
+        
+        {/* Right: Activity Log */}
+        <div className="bg-white p-6 rounded-3xl border border-[#EC4899]/10 shadow-sm">
+          <h3 className="font-black mb-5 text-sm uppercase tracking-widest text-[#EC4899]">Antrean Berjalan</h3>
+          <div className="space-y-4">
+            {[
+              { n: "Alya", t: "Facial Gold", s: "Proses" },
+              { n: "Rina", t: "Acne Injection", s: "Proses" },
+              { n: "Siti", t: "Laser Rejuvenation", s: "Menunggu" }
+            ].map((x, i) => (
+              <div key={i} className="flex items-center justify-between p-4 bg-[#FDF2F7] rounded-2xl border border-[#EC4899]/5 hover:bg-[#FCE7F3] transition-colors">
+                <div>
+                  <p className="text-xs font-bold text-[#2D0B1A] mb-0.5">{x.n}</p>
+                  <p className="text-[10px] text-[#EC4899] font-medium">{x.t}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                   <span className={`text-[9px] px-2.5 py-1 rounded-full font-black uppercase tracking-tighter ${
+                    x.s === 'Proses' ? 'bg-[#EC4899] text-white' : 'bg-white text-[#EC4899] border border-[#EC4899]'
+                  }`}>
+                    {x.s}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+          <button className="w-full mt-6 py-3 rounded-xl border border-dashed border-[#EC4899]/30 text-[#EC4899] text-[10px] font-black uppercase tracking-widest hover:bg-[#EC4899] hover:text-white transition-all">
+            Lihat Semua Jadwal
+          </button>
+        </div>
       </div>
     </div>
   );
