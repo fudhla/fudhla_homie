@@ -1,63 +1,52 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, Navigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 export default function AuthLayout() {
+  const user = localStorage.getItem("user");
+  if (user) return <Navigate to="/" replace />;
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#FDF6F8] p-4 sm:p-8 font-sans">
+    <div className="flex h-screen w-full font-sans bg-white overflow-hidden">
       
-      <div className="flex w-full max-w-[1000px] min-h-[600px] bg-white rounded-[32px] overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.08)]">
+      {/* SISI KIRI: Biru Profesional */}
+      <div className="hidden lg:flex w-[50%] bg-[#003594] relative flex-col justify-center px-20 text-white overflow-hidden">
         
-        {/* LEFT SIDE */}
-        <div className="hidden lg:flex flex-col justify-between w-[45%] bg-[#0B3B60] p-12 relative overflow-hidden">
-          
-          {/* Logo */}
-          <div className="z-10">
-            <h1 className="text-white text-3xl font-extrabold tracking-tight">
-              GLOWCARE.
-            </h1>
-          </div>
+        {/* Dekorasi Lingkaran / Pola sesuai gambar GoFinance */}
+        <div className="absolute -bottom-20 -left-20 w-[400px] h-[400px] border border-white/10 rounded-full"></div>
+        <div className="absolute -bottom-10 -left-10 w-[300px] h-[300px] border border-white/20 rounded-full"></div>
+        
+        {/* Titik Dekorasi di Pojok */}
+        <div className="absolute top-8 left-8 w-3 h-3 bg-white/40 rounded-full"></div>
+        <div className="absolute bottom-8 left-8 w-3 h-3 bg-white/40 rounded-full"></div>
 
-          {/* Text */}
-          <div className="z-10 mb-24 -mt-16">
-            <h2 className="text-white text-[2.5rem] leading-[1.15] font-semibold mb-4">
-              Rawat kecantikan dan kesehatan kulit Anda bersama Glow Care ✨
-            </h2>
-          </div>
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+          className="relative z-10"
+        >
+          <h1 className="text-5xl font-black mb-4 tracking-tight">GlowFinance</h1>
+          <p className="text-lg text-blue-100/70 mb-10 max-w-md leading-relaxed">
+            Sistem manajemen klinik kecantikan paling populer di Asia Tenggara.
+          </p>
+          <button className="px-8 py-3 bg-[#0066FF] hover:bg-blue-600 rounded-xl text-sm font-bold shadow-xl transition-all active:scale-95">
+            Read More
+          </button>
+        </motion.div>
+      </div>
 
-          {/* Pattern */}
-          <div className="absolute bottom-8 left-12 grid grid-cols-5 grid-rows-4 gap-0 w-[240px] h-[192px] z-0">
-            <div className="bg-pink-300 rounded-tl-full"></div>
-            <div className="bg-pink-400 rounded-br-full"></div>
-            <div className="bg-rose-300 rounded-tr-full"></div>
-            <div className="bg-yellow-200 rounded-bl-full"></div>
-            <div className="bg-pink-500 rounded-tr-full"></div>
+      {/* SISI KANAN: Form (Login/Register/Forgot) */}
+      <div className="flex-1 flex flex-col justify-center px-10 sm:px-20 lg:px-28 relative bg-white">
+        {/* Titik Dekorasi Sisi Kanan */}
+        <div className="absolute top-8 right-8 w-3 h-3 border border-blue-900/20 rounded-full"></div>
+        <div className="absolute bottom-8 right-8 w-3 h-3 border border-blue-900/20 rounded-full"></div>
 
-            <div className="bg-pink-200 rounded-br-full"></div>
-            <div className="bg-pink-300 rounded-bl-full"></div>
-            <div className="bg-rose-200 rounded-full"></div>
-            <div className="bg-yellow-100"></div>
-            <div className="bg-pink-200 rounded-tl-full"></div>
-
-            <div className="bg-pink-300 rounded-tr-full"></div>
-            <div className="bg-pink-100"></div>
-            <div className="bg-rose-300 rounded-br-full"></div>
-            <div className="bg-yellow-200 rounded-tl-full"></div>
-            <div className="bg-pink-400"></div>
-
-            <div className="bg-pink-200 rounded-bl-full"></div>
-            <div className="bg-pink-400 rounded-tr-full"></div>
-            <div className="bg-rose-300 rounded-tl-full"></div>
-            <div className="bg-yellow-100 rounded-br-full"></div>
-            <div className="bg-pink-500 rounded-br-[80%]"></div>
-          </div>
-        </div>
-
-        {/* RIGHT SIDE */}
-        <div className="flex-1 flex flex-col justify-center px-8 py-10 sm:px-16 lg:px-20 bg-white">
+        <div className="w-full max-w-md mx-auto">
           <Outlet />
         </div>
-
       </div>
+
     </div>
   );
 }

@@ -1,31 +1,30 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, Navigate } from "react-router-dom";
+import Sidebar from "../components/Sidebar"; 
 import Header from "../components/Header";
-import Sidebar from "../components/Sidebar";
 
 export default function MainLayout() {
-  return (
-    <div className="w-full min-h-screen flex bg-[#FFF8FA] font-sans">
+  const user = localStorage.getItem("user");
+  if (!user) return <Navigate to="/login" replace />;
 
-      {/* SIDEBAR */}
-      <aside className="w-[260px] h-screen fixed left-0 top-0 bg-[#0B3B60] rounded-r-[40px] shadow-[5px_0_30px_rgba(0,0,0,0.05)] z-20 flex flex-col">
+  return (
+    <div className="flex h-screen w-full bg-[#F5F7FA] overflow-hidden">
+      {/* Sidebar */}
+      <aside className="w-[250px] h-full hidden lg:block flex-shrink-0">
         <Sidebar />
       </aside>
 
-      {/* MAIN CONTENT */}
-      <div className="flex-1 ml-[260px] flex flex-col min-h-screen">
-
-        {/* HEADER */}
-        <header className="w-full px-10 pt-10 pb-6 flex justify-end">
+      {/* Konten Utama */}
+      <div className="flex-1 flex flex-col h-screen overflow-hidden">
+        <header className="w-full px-8 py-5 bg-white border-b border-[#E6EFF5]">
           <Header />
         </header>
 
-        {/* CONTENT */}
-        <main className="flex-1 w-full px-10 pb-10 max-w-[1400px]">
-          <Outlet />
+        <main className="flex-1 overflow-y-auto p-8">
+          <div className="max-w-[1400px] mx-auto">
+            <Outlet />
+          </div>
         </main>
-
       </div>
-
     </div>
   );
 }

@@ -1,93 +1,72 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
+import { motion } from "framer-motion";
 
 export default function Login() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ email: "", password: "" });
   const [showPass, setShowPass] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [formData, setFormData] = useState({ email: "", password: "" });
 
-  const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
-
-  const handleSubmit = async (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
-    try {
-      // Simulasi/Dummy Login
-      await new Promise(r => setTimeout(r, 1000));
-      localStorage.setItem("user", JSON.stringify({ name: "Admin" }));
-      navigate("/");
-    } catch (err) {
-      setError("Email atau password salah");
-    } finally {
-      setLoading(false);
-    }
+    localStorage.setItem("user", "true");
+    navigate("/");
   };
 
   return (
-    <div className="w-full max-w-sm mx-auto">
-      <div className="mb-8">
-        <h2 className="text-white text-3xl font-bold mb-2 flex items-center">
-          Selamat Datang <span className="ml-2 text-2xl">💖</span>
-        </h2>
-        <p className="text-[#E9D5DA]/60 text-sm">Masuk ke akun Glow Care Anda</p>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+      <div className="mb-10">
+        <h2 className="text-4xl font-bold text-gray-800 mb-2">Hello Again!</h2>
+        <p className="text-gray-400 font-medium">Welcome Back</p>
       </div>
 
-      {error && (
-        <div className="mb-4 bg-red-500/10 border border-red-500/20 text-red-400 text-sm px-4 py-3 rounded-xl">
-          {error}
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit} className="space-y-5">
-        <div className="space-y-1.5">
-          <label className="block text-xs font-bold text-[#E9D5DA]/40 uppercase">Email</label>
-          <div className="relative flex items-center">
-            <FaEnvelope className="absolute left-4 text-[#E9D5DA]/20 text-sm" />
-            <input
-              type="text"
-              value={form.email}
-              onChange={(e) => set("email", e.target.value)}
-              placeholder="you@example.com"
-              className="w-full pl-12 pr-4 py-3.5 bg-[#4A1229] border border-white/5 rounded-xl text-sm text-white placeholder-[#E9D5DA]/20 focus:outline-none focus:border-[#EC4899] focus:ring-1 focus:ring-[#EC4899] transition-all"
-            />
-          </div>
+      <form onSubmit={handleLogin} className="space-y-6">
+        <div className="relative">
+          <FaEnvelope className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-300" />
+          <input
+            type="email"
+            required
+            className="w-full pl-14 pr-4 py-4 bg-white border border-gray-100 rounded-2xl shadow-sm outline-none focus:border-[#0066FF] focus:ring-4 focus:ring-blue-50 transition-all placeholder:text-gray-300"
+            placeholder="Email Address"
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          />
         </div>
 
-        <div className="space-y-1.5">
-          <label className="block text-xs font-bold text-[#E9D5DA]/40 uppercase">Password</label>
-          <div className="relative flex items-center">
-            <FaLock className="absolute left-4 text-[#E9D5DA]/20 text-sm" />
-            <input
-              type={showPass ? "text" : "password"}
-              value={form.password}
-              onChange={(e) => set("password", e.target.value)}
-              placeholder="••••••••"
-              className="w-full pl-12 pr-12 py-3.5 bg-[#4A1229] border border-white/5 rounded-xl text-sm text-white placeholder-[#E9D5DA]/20 focus:outline-none focus:border-[#EC4899] focus:ring-1 focus:ring-[#EC4899] transition-all"
-            />
-            <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-4 text-[#E9D5DA]/20 hover:text-white">
-              {showPass ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
-            </button>
-          </div>
+        <div className="relative">
+          <FaLock className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-300" />
+          <input
+            type={showPass ? "text" : "password"}
+            required
+            className="w-full pl-14 pr-14 py-4 bg-white border border-gray-100 rounded-2xl shadow-sm outline-none focus:border-[#0066FF] focus:ring-4 focus:ring-blue-50 transition-all placeholder:text-gray-300"
+            placeholder="Password"
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+          />
+          <button 
+            type="button" 
+            onClick={() => setShowPass(!showPass)}
+            className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-300 hover:text-blue-600"
+          >
+            {showPass ? <FaEyeSlash /> : <FaEye />}
+          </button>
         </div>
 
         <button
           type="submit"
-          disabled={loading}
-          className="w-full mt-2 bg-[#EC4899] text-white py-3.5 rounded-xl font-bold hover:bg-[#D13D81] transition-all shadow-lg shadow-[#EC4899]/20 disabled:opacity-70"
+          className="w-full bg-[#0066FF] text-white py-4 rounded-2xl font-bold shadow-xl shadow-blue-500/20 hover:bg-blue-600 active:scale-[0.98] transition-all"
         >
-          {loading ? "Memproses..." : "Masuk Sekarang"}
+          Login
         </button>
-      </form>
 
-      <p className="text-center text-sm text-[#E9D5DA]/40 mt-8">
-        Belum punya akun?{" "}
-        <Link to="/register" className="text-[#EC4899] font-bold hover:underline">Daftar</Link>
-      </p>
-    </div>
+        <div className="flex flex-col gap-4 mt-8 text-center">
+          <Link to="/forgot" className="text-xs font-bold text-gray-400 hover:text-blue-600">
+            Forgot Password
+          </Link>
+          <p className="text-sm text-gray-400">
+            Belum punya akun? <Link to="/register" className="text-[#0066FF] font-bold hover:underline">Daftar Sekarang</Link>
+          </p>
+        </div>
+      </form>
+    </motion.div>
   );
 }
