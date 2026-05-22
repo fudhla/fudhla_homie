@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaArrowLeft, FaCheck, FaUser, FaRegSparkles, FaNotesMedical } from "react-icons/fa";
+import { FaArrowLeft, FaCheck, FaUser, FaNotesMedical } from "react-icons/fa";
 
 const skinTypeOptions = [
   { emoji: "💧", label: "Kering" },
@@ -69,7 +69,7 @@ export default function AddPatient() {
 
         {step === 2 && (
           <div className="space-y-6 animate-fadeIn">
-            <h3 className="text-lg font-bold text-[#31B296] flex items-center gap-2"><FaRegSparkles size={16}/> Tipe Kulit & Usia</h3>
+            <h3 className="text-lg font-bold text-[#31B296] flex items-center gap-2"> Tipe Kulit & Usia</h3>
             <div className="grid grid-cols-5 gap-2">
               {skinTypeOptions.map((s) => (
                 <button key={s.label} onClick={() => set("skinType", s.label)} className={`flex flex-col items-center p-3 rounded-2xl border-2 transition ${form.skinType === s.label ? "border-[#31B296] bg-[#31B296]/10" : "border-white/5 bg-[#0B2A46]"}`}>
