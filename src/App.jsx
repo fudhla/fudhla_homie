@@ -12,6 +12,7 @@ const Patients   = lazy(() => import("./pages/Patients"));
 const AddPatient = lazy(() => import("./pages/AddPatient"));
 const Treatments = lazy(() => import("./pages/Treatments"));
 const Customers  = lazy(() => import("./pages/Customers"));
+const ComponentsPage = lazy(() => import("./pages/Components"));
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Route path="/patients/add" element={<AddPatient />} />
           <Route path="/treatments" element={<Treatments />} />
           <Route path="/customers" element={<Customers />} />
+          <Route path="/components" element={<ComponentsPage />} />
         </Route>
       </Routes>
     </Suspense>

@@ -1,5 +1,15 @@
+import React from "react";
 import { NavLink } from "react-router-dom";
-import { FaThLarge, FaCalendarCheck, FaUserFriends, FaFileMedical, FaSyringe, FaBoxOpen, FaCog, FaSignOutAlt, FaClinicMedical } from "react-icons/fa";
+import { 
+  FaThLarge, 
+  FaCalendarCheck, 
+  FaUserFriends, 
+  FaFileMedical, 
+  FaBoxOpen, 
+  FaSignOutAlt, 
+  FaClinicMedical, 
+  FaCode 
+} from "react-icons/fa";
 
 const menuItems = [
   { group: "MENU", items: [{ to: "/", label: "Dashboard", icon: FaThLarge, end: true }] },
@@ -11,6 +21,9 @@ const menuItems = [
   { group: "KLINIK", items: [
     { to: "/medical-records", label: "Riwayat Medis", icon: FaFileMedical },
     { to: "/inventory", label: "Produk", icon: FaBoxOpen },
+  ]},
+  { group: "PRAKTIKUM", items: [
+    { to: "/components", label: "Components", icon: FaCode },
   ]},
 ];
 

@@ -1,6 +1,9 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaSearch, FaPlus, FaPhone, FaCrown, FaFilter, FaEllipsisH } from "react-icons/fa";
+import Card from "../components/Card";
+import Badge from "../components/Badge";
+import Button from "../components/Button";
 
 const customersData = [
   { id: 1, name: "Rina Aprilia", phone: "0812-7766-5544", type: "Platinum", visits: 24, spend: "12.5M", avatar: "RA", color: "bg-[#E0F2FE] text-[#0369A1]" },
@@ -13,7 +16,6 @@ export default function Customers() {
   const [search, setSearch] = useState("");
 
   return (
-    /* Background utama menggunakan Biru Sangat Muda (Ice Blue) */
     <div className="p-8 bg-[#F0F9FF] min-h-screen font-sans text-[#0F172A]">
       
       {/* Header Section */}
@@ -25,13 +27,13 @@ export default function Customers() {
           <p className="text-[#0284C7] font-medium mt-1">Sistem Manajemen Loyalitas Pasien GlowCare</p>
         </div>
         
-        <button 
-          onClick={() => navigate("/patients/add")} 
-          /* Tombol Utama menggunakan Biru Terang (Vibrant Blue) */
-          className="bg-[#0284C7] hover:bg-[#0369A1] text-white px-8 py-3.5 rounded-full font-bold text-sm flex items-center gap-2 transition-all shadow-lg shadow-blue-500/20 active:scale-95"
+        <Button 
+          variant="cyan" 
+          onClick={() => navigate("/patients/add")}
+          className="px-8 py-3.5 rounded-full text-sm flex items-center gap-2"
         >
           <FaPlus size={12}/> Daftarkan Member Baru
-        </button>
+        </Button>
       </div>
 
       {/* Filter & Search Bar */}
@@ -46,18 +48,16 @@ export default function Customers() {
             className="w-full pl-14 pr-6 py-4 rounded-full bg-white border-none shadow-sm focus:ring-2 focus:ring-[#0284C7]/20 text-[#0F172A] placeholder:text-[#0F172A]/30 transition-all" 
           />
         </div>
-        <button className="flex items-center gap-2 px-6 py-4 bg-white rounded-full text-[#0F172A]/60 font-bold text-sm shadow-sm hover:bg-[#E0F2FE] transition-all">
+        <Button variant="light" className="flex items-center gap-2 px-6 py-4 rounded-full text-[#0F172A]/60 text-sm shadow-sm">
           <FaFilter size={12} /> Filter Kategori
-        </button>
+        </Button>
       </div>
 
       {/* Grid Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {customersData.map(c => (
-          /* Shadow hover menggunakan nuansa Biru */
-          <div key={c.id} className="bg-white p-8 rounded-[2.5rem] shadow-sm hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-500 group relative overflow-hidden border border-transparent hover:border-[#0284C7]/10">
+          <Card key={c.id} className="p-8 rounded-[2.5rem] hover:shadow-2xl hover:shadow-blue-500/10 duration-500 group relative overflow-hidden border-transparent hover:border-[#0284C7]/10">
             
-            {/* Dekorasi lingkaran transparan menggunakan Biru Muda */}
             <div className="absolute -right-8 -top-8 w-24 h-24 bg-[#F0F9FF] rounded-full group-hover:scale-150 transition-transform duration-700"></div>
 
             <div className="relative z-10">
@@ -70,11 +70,9 @@ export default function Customers() {
                    <button className="text-[#0F172A]/20 hover:text-[#0284C7] transition-colors">
                       <FaEllipsisH />
                    </button>
-                   <span className={`text-[10px] px-4 py-1.5 rounded-full font-black uppercase tracking-widest ${
-                      c.type === 'Platinum' ? 'bg-[#0F172A] text-white' : 'bg-[#E0F2FE] text-[#0369A1]'
-                   }`}>
+                   <Badge variant={c.type.toLowerCase()}>
                     {c.type}
-                  </span>
+                  </Badge>
                 </div>
               </div>
 
@@ -100,7 +98,7 @@ export default function Customers() {
                 Lihat Detail Profil
               </button>
             </div>
-          </div>
+          </Card>
         ))}
       </div>
 

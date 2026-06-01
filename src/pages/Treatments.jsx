@@ -1,4 +1,8 @@
+import React from "react";
 import { FaCalendarAlt, FaCheckCircle } from "react-icons/fa";
+import Card from "../components/Card";
+import Badge from "../components/Badge";
+import Button from "../components/Button";
 
 const schedule = [
   { id: 1, time: "10:00", patient: "Rina Aprilia", service: "Laser Rejuvenation", room: "Room 04", status: "On Progress" },
@@ -13,14 +17,14 @@ export default function Treatments() {
           <h1 className="text-2xl font-bold text-[#343C6A]">Jadwal Treatment</h1>
           <p className="text-sm text-[#718EBF]">Antrean ruangan hari ini</p>
         </div>
-        <div className="bg-white px-6 py-3 rounded-2xl border border-[#E6EFF5] flex items-center gap-3 shadow-sm text-[#343C6A] font-bold">
+        <Card className="px-6 py-3 rounded-2xl flex items-center gap-3 text-[#343C6A] font-bold">
           <FaCalendarAlt className="text-[#1877F2]" /> 14 Mei 2026
-        </div>
+        </Card>
       </div>
 
       <div className="grid gap-4">
         {schedule.map(t => (
-          <div key={t.id} className="bg-white p-6 rounded-[25px] border border-[#E6EFF5] flex flex-col md:flex-row items-center justify-between shadow-sm hover:border-[#1877F2]/30 transition-all group">
+          <Card key={t.id} className="p-6 rounded-[25px] flex flex-col md:flex-row items-center justify-between hover:border-[#1877F2]/30 group">
             <div className="flex items-center gap-8">
               <div className="text-center min-w-[80px]">
                 <p className="text-2xl font-black text-[#1877F2]">{t.time}</p>
@@ -36,16 +40,14 @@ export default function Treatments() {
             </div>
 
             <div className="flex items-center gap-6 mt-4 md:mt-0">
-              <span className={`px-6 py-2 rounded-full text-[11px] font-bold uppercase tracking-wider ${
-                t.status === 'On Progress' ? 'bg-[#E7EDFF] text-[#1877F2]' : 'bg-gray-100 text-gray-400'
-              }`}>
+              <Badge variant={t.status === 'On Progress' ? 'progress' : 'waiting'} className="w-32">
                 {t.status}
-              </span>
-              <button className="w-12 h-12 rounded-2xl bg-[#F5F7FA] flex items-center justify-center text-[#B1B1B1] hover:bg-[#1877F2] hover:text-white transition-all shadow-sm">
+              </Badge>
+              <Button variant="icon">
                 <FaCheckCircle size={22} />
-              </button>
+              </Button>
             </div>
-          </div>
+          </Card>
         ))}
       </div>
     </div>
