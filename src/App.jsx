@@ -1,4 +1,5 @@
-import "./assets/tailwind.css";
+// 1. Sesuaikan target import ini dengan lokasi file CSS yang sudah kita bersihkan tadi
+import "./assets/tailwind.css"; 
 import React, { Suspense, lazy } from "react";
 import { Routes, Route } from "react-router-dom";
 import Loading from "./components/Loading";
@@ -13,6 +14,9 @@ const AddPatient = lazy(() => import("./pages/AddPatient"));
 const Treatments = lazy(() => import("./pages/Treatments"));
 const Customers  = lazy(() => import("./pages/Customers"));
 const ComponentsPage = lazy(() => import("./pages/Components"));
+
+// Tambahkan lazy import untuk halaman tugas kuliahmu
+const FiturXYZ   = lazy(() => import("./pages/FiturXYZ")); 
 
 function App() {
   return (
@@ -31,6 +35,9 @@ function App() {
           <Route path="/treatments" element={<Treatments />} />
           <Route path="/customers" element={<Customers />} />
           <Route path="/components" element={<ComponentsPage />} />
+          
+          {/* Tambahkan Rute Fitur XYZ di sini agar muncul di dalam layout utama */}
+          <Route path="/fitur-xyz" element={<FiturXYZ />} />
         </Route>
       </Routes>
     </Suspense>

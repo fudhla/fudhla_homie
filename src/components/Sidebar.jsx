@@ -8,7 +8,8 @@ import {
   FaBoxOpen, 
   FaSignOutAlt, 
   FaClinicMedical, 
-  FaCode 
+  FaCode,
+  FaStar // ← Menambahkan ikon FaStar yang sudah pasti ada di react-icons/fa
 } from "react-icons/fa";
 
 const menuItems = [
@@ -24,6 +25,8 @@ const menuItems = [
   ]},
   { group: "PRAKTIKUM", items: [
     { to: "/components", label: "Components", icon: FaCode },
+    // ← Hanya menambahkan baris rute baru ini ke array menuItems milikmu
+    { to: "/fitur-xyz", label: "Fitur XYZ", icon: FaStar }, 
   ]},
 ];
 
