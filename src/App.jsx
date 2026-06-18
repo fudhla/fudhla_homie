@@ -1,7 +1,7 @@
 // 1. Sesuaikan target import ini dengan lokasi file CSS yang sudah kita bersihkan tadi
 import "./assets/tailwind.css"; 
 import React, { Suspense, lazy } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom"; // <-- Sudah diperbaiki di sini ya!
 import Loading from "./components/Loading";
 
 // Gunakan Lazy Loading untuk performa dan menghindari konflik import
@@ -18,6 +18,9 @@ const ComponentsPage = lazy(() => import("./pages/Components"));
 // Tambahkan lazy import untuk halaman tugas kuliahmu
 const FiturXYZ   = lazy(() => import("./pages/FiturXYZ")); 
 
+// Target import khusus untuk modul folder member baru
+const MemberList = lazy(() => import("./pages/member/MemberList"));
+
 function App() {
   return (
     <Suspense fallback={<Loading />}>
@@ -26,6 +29,9 @@ function App() {
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<Login />} />
         </Route>
+
+        {/* Route Khusus Member - Ditulis mandiri agar tampil FULL tanpa terpengaruh Sidebar Admin */}
+        <Route path="/member" element={<MemberList />} />
 
         {/* Route Dengan Sidebar (Dashboard & Manajemen) */}
         <Route element={<MainLayout />}>
