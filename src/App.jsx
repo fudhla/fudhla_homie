@@ -25,12 +25,11 @@ function App() {
   return (
     <Suspense fallback={<Loading />}>
       <Routes>
-        {/* Route Tanpa Sidebar (Login/Register) */}
+       
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<Login />} />
         </Route>
 
-        {/* Route Khusus Member - Ditulis mandiri agar tampil FULL tanpa terpengaruh Sidebar Admin */}
         <Route path="/member" element={<MemberList />} />
 
         {/* Route Dengan Sidebar (Dashboard & Manajemen) */}

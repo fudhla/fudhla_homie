@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react"; // Menambahkan useEffect dan useRef di sini
 import { FaCrown, FaSearch, FaSignOutAlt, FaNotesMedical, FaUserCheck } from "react-icons/fa";
 import MemberCard from "./MemberCard";
 
@@ -8,6 +8,16 @@ export default function MemberList() {
     { id: "MB-002", nama: "Siti Rahma", tipe: "Gold", status: "Aktif", totalTransaksi: "Rp 1.200.000" },
     { id: "MB-003", nama: "Budi Santoso", tipe: "Silver", status: "Non-Aktif", totalTransaksi: "Rp 450.000" },
   ]);
+
+  // Deklarasi useRef untuk menargetkan input pencarian
+  const inputRef = useRef(null);
+
+  // Deklarasi useEffect untuk memicu auto-focus saat halaman dimuat
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans">
@@ -71,6 +81,7 @@ export default function MemberList() {
             <div className="bg-white border border-slate-200 rounded-lg px-3 py-2 flex items-center gap-2 max-w-xs w-full shadow-2xs">
               <FaSearch className="text-slate-400 text-xs" />
               <input 
+                ref={inputRef} // Menyematkan properti ref di sini tanpa mengubah class styling
                 type="text" 
                 placeholder="Cari ID Keanggotaan..." 
                 className="bg-transparent text-xs text-slate-700 outline-hidden w-full placeholder:text-slate-400"
