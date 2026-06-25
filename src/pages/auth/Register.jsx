@@ -1,91 +1,122 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { FaUser, FaEnvelope, FaLock, FaBuilding } from "react-icons/fa";
-import { motion } from "framer-motion";
+import { useNavigate, Link } from "react-router-dom";
+import { usersAPI } from "../../services/usersAPI";
+import AlertBox from "../../components/AlertBox";
 
 export default function Register() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: "", clinic: "", email: "", password: "", role: "admin" });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [formData, setFormData] = useState({ name: "", email: "", password: "", role: "member" });
 
-  const handleRegister = (e) => {
-    e.preventDefault();
-    alert("Registrasi Berhasil!");
-    navigate("/login");
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleRegister = async (e) => {
+    e.preventDefault(); // Mencegah reload halaman
+    setLoading(true);
+    setError("");
+    setSuccess("");
+
+    // Log ke terminal browser untuk memastikan fungsi ini berjalan saat tombol diklik
+    console.log("Mencoba mendaftarkan data:", formData);
+
+    try {
+      // 1. Validasi cek apakah email sudah ada di Supabase
+      const userExist = await usersAPI.getUserByEmail(formData.email);
+      if (userExist && userExist.length > 0) {
+        throw new Error("Email sudah terdaftar! Gunakan email lain.");
+      }
+
+      // 2. Kirim data ke Supabase jika email belum terdaftar
+      await usersAPI.registerUser(formData);
+      
+      setSuccess("Pendaftaran Berhasil! Mengalihkan ke halaman login...");
+      
+      // Pindah ke halaman login setelah 2.5 detik
+      setTimeout(() => navigate("/login"), 2500);
+    } catch (err) {
+      console.error("Detail Error Register:", err);
+      // Menampilkan pesan error spesifik dari server/Supabase langsung ke UI aplikasi
+      setError(err.response?.data?.message || err.message || "Gagal melakukan pendaftaran.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-      <div className="mb-8">
-        <h2 className="text-4xl font-bold text-gray-800 mb-2">Join Us!</h2>
-        <p className="text-gray-400 font-medium">Mulai kelola klinik Anda secara profesional</p>
-      </div>
+    <div className="min-h-screen flex items-center justify-center bg-slate-100 px-4">
+      <div className="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full">
+        <h2 className="text-2xl font-bold text-center text-slate-800 mb-2">GlowCare CRM</h2>
+        <p className="text-sm text-center text-slate-500 mb-6">Daftar Akun Keanggotaan Baru</p>
 
-      <form onSubmit={handleRegister} className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="relative">
-            <FaUser className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" />
-            <input 
-              type="text" placeholder="Nama" 
-              className="w-full pl-11 pr-4 py-3.5 bg-white border border-gray-100 rounded-xl outline-none focus:border-blue-500 transition-all text-sm"
-              onChange={(e) => setForm({...form, name: e.target.value})}
+        {/* Kotak Alert Interaktif */}
+        {error && <AlertBox type="error">{error}</AlertBox>}
+        {success && <AlertBox type="success">{success}</AlertBox>}
+
+        {/* PASTIKAN onSubmit terpasang di tag <form> */}
+        <form onSubmit={handleRegister} className="space-y-4">
+          <div>
+            <label className="block text-xs font-semibold text-slate-600 mb-1">Nama Lengkap</label>
+            <input
+              type="text"
+              name="name"
+              placeholder="Nama Lengkap"
+              value={formData.name}
+              onChange={handleChange}
+              required
+              disabled={loading}
+              className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none disabled:opacity-50 text-sm"
             />
           </div>
-          <div className="relative">
-            <FaBuilding className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" />
-            <input 
-              type="text" placeholder="Klinik" 
-              className="w-full pl-11 pr-4 py-3.5 bg-white border border-gray-100 rounded-xl outline-none focus:border-blue-500 transition-all text-sm"
-              onChange={(e) => setForm({...form, clinic: e.target.value})}
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-600 mb-1">Alamat Email</label>
+            <input
+              type="email"
+              name="email"
+              placeholder="Alamat Email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              disabled={loading}
+              className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none disabled:opacity-50 text-sm"
             />
           </div>
-        </div>
 
-        <div className="relative">
-          <FaEnvelope className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" />
-          <input 
-            type="email" placeholder="Email Address" 
-            className="w-full pl-11 pr-4 py-3.5 bg-white border border-gray-100 rounded-xl outline-none focus:border-blue-500 transition-all text-sm"
-            onChange={(e) => setForm({...form, email: e.target.value})}
-          />
-        </div>
-
-        <div className="relative">
-          <FaLock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" />
-          <input 
-            type="password" placeholder="Password" 
-            className="w-full pl-11 pr-4 py-3.5 bg-white border border-gray-100 rounded-xl outline-none focus:border-blue-500 transition-all text-sm"
-            onChange={(e) => setForm({...form, password: e.target.value})}
-          />
-        </div>
-
-        <div className="py-2">
-          <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-3">Pilih Peran Anda</label>
-          <div className="grid grid-cols-3 gap-2">
-            {["Dokter", "Admin", "Kasir"].map((role) => (
-              <button
-                key={role} type="button"
-                onClick={() => setForm({...form, role: role.toLowerCase()})}
-                className={`py-2 text-xs font-bold rounded-lg border transition-all ${
-                  form.role === role.toLowerCase() ? "bg-blue-50 border-blue-500 text-blue-600" : "bg-white border-gray-100 text-gray-400"
-                }`}
-              >
-                {role}
-              </button>
-            ))}
+          <div>
+            <label className="block text-xs font-semibold text-slate-600 mb-1">Kata Sandi</label>
+            <input
+              type="password"
+              name="password"
+              placeholder="Kata Sandi"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              disabled={loading}
+              className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none disabled:opacity-50 text-sm"
+            />
           </div>
-        </div>
 
-        <button
-          type="submit"
-          className="w-full bg-[#0066FF] text-white py-4 rounded-2xl font-bold shadow-xl shadow-blue-500/20 hover:bg-blue-600 transition-all mt-4"
-        >
-          Buat Akun
-        </button>
+          {/* PASTIKAN type="submit" */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all shadow-md disabled:opacity-50 text-sm cursor-pointer mt-2"
+          >
+            {loading ? "Mohon Tunggu / Mendaftarkan..." : "Daftar Sekarang"}
+          </button>
+        </form>
 
-        <p className="text-center text-xs text-gray-400 font-bold mt-6">
-          Sudah punya akun? <Link to="/login" className="text-[#0066FF] hover:underline">Masuk</Link>
+        <p className="text-xs text-center text-slate-500 mt-6">
+          Sudah punya akun?{" "}
+          <Link to="/login" className="text-blue-600 font-semibold hover:underline">
+            Masuk di sini
+          </Link>
         </p>
-      </form>
-    </motion.div>
+      </div>
+    </div>
   );
 }

@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaEnvelope, FaArrowLeft } from "react-icons/fa";
+import { usersAPI } from "../../services/usersAPI"; // 👈 Menghubungkan ke API Supabase
 
-export default function ForgotPassword() {
+export default function Forgot() { // 👈 Menggunakan nama komponen 'Forgot' agar sinkron dengan nama file
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -15,9 +16,23 @@ export default function ForgotPassword() {
     if (!/\S+@\S+\.\S+/.test(email)) { setError("Format email tidak valid."); return; }
 
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 1200));
-    setLoading(false);
-    setSuccess(true);
+
+    try {
+      // 1. Cek secara riil apakah email ini terdaftar di tabel users Supabase kamu
+      const userExist = await usersAPI.getUserByEmail(email);
+      
+      if (userExist.length === 0) {
+        throw new Error("Alamat email tidak ditemukan dalam sistem database.");
+      }
+
+      // 2. Simulasi jeda animasi pengiriman instruksi
+      await new Promise((r) => setTimeout(r, 1200));
+      setSuccess(true);
+    } catch (err) {
+      setError(err.message || "Gagal memproses permintaan reset password.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -54,16 +69,17 @@ export default function ForgotPassword() {
             <input
               type="email"
               value={email}
+              disabled={loading} // 👈 Mengunci input saat loading proses cek API
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Email Address"
-              className="w-full pl-12 pr-4 py-4 bg-white border border-gray-100 rounded-2xl shadow-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/5 transition-all placeholder:text-gray-300 text-gray-700"
+              className="w-full pl-12 pr-4 py-4 bg-white border border-gray-100 rounded-2xl shadow-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/5 transition-all placeholder:text-gray-300 text-gray-700 disabled:opacity-60"
             />
           </div>
 
           <button
             type="submit"
-            disabled={loading}
-            className="w-full bg-[#0066FF] text-white py-4 rounded-full font-bold shadow-xl shadow-blue-500/20 hover:bg-[#0052cc] active:scale-95 transition-all duration-300 disabled:opacity-60"
+            disabled={loading} // 👈 Mencegah klik ganda saat proses berjalan
+            className="w-full bg-[#0066FF] text-white py-4 rounded-full font-bold shadow-xl shadow-blue-500/20 hover:bg-[#0052cc] active:scale-95 transition-all duration-300 disabled:opacity-60 cursor-pointer"
           >
             {loading ? "Mengirim..." : "Kirim Instruksi Reset"}
           </button>

@@ -1,10 +1,9 @@
 import React from "react";
-import { Outlet, Navigate } from "react-router-dom";
+import { Outlet } from "react-router-dom"; // Hapus Navigate karena tidak kita pakai di sini
 import { motion } from "framer-motion";
 
 export default function AuthLayout() {
-  const user = localStorage.getItem("user");
-  if (user) return <Navigate to="/" replace />;
+  // 💡 KITA HAPUS LOGIKA CEK USER DI SINI AGAR HALAMAN REGISTER BISA DIAKSES BEBAS
 
   return (
     <div className="flex h-screen w-full font-sans bg-white overflow-hidden">
