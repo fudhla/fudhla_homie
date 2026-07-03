@@ -14,47 +14,66 @@ export default function Patients() {
   const headers = ["Pasien", "Kondisi Kulit", "Dokter", "Status", "Kunjungan"];
 
   return (
-    <div className="font-sans">
+    <div className="font-sans" style={{ color: "#0f172a" }}>
+      {/* Header Halaman */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#343C6A]">Data Pasien Klinis</h1>
-          <p className="text-sm text-[#718EBF]">Monitoring rekam medis dan tipe kulit pasien</p>
+          <h1 className="text-2xl font-bold" style={{ color: "#0f172a" }}>Data Pasien Klinis</h1>
+          <p className="text-sm" style={{ color: "#64748b" }}>Monitoring rekam medis dan tipe kulit pasien</p>
         </div>
         
+        {/* Kolom Pencarian */}
         <div className="relative w-full md:w-80">
-          <FaSearch className="absolute left-5 top-1/2 -translate-y-1/2 text-[#888EA2]" />
+          <FaSearch className="absolute left-5 top-1/2 -translate-y-1/2" style={{ color: "#94a3b8" }} />
           <input 
             type="text" 
             placeholder="Search for patient..." 
-            className="w-full pl-12 pr-4 py-3 bg-white border border-[#E6EFF5] rounded-full text-sm outline-none focus:ring-1 focus:ring-[#1877F2] transition-all shadow-sm"
+            style={{ backgroundColor: "#ffffff", borderColor: "#e2e8f0", color: "#0f172a" }}
+            className="w-full pl-12 pr-4 py-3 border rounded-full text-sm outline-none focus:ring-1 focus:ring-blue-600 transition-all shadow-sm placeholder:text-slate-400"
           />
         </div>
       </div>
 
-      <Card className="rounded-[30px]">
+      {/* Kontainer Tabel Utama - Dipaksa Putih Bersih lewat inline style */}
+      <div style={{ backgroundColor: "#ffffff", borderRadius: "30px", overflow: "hidden" }} className="border border-slate-100 shadow-xl shadow-slate-200/50">
         <Table headers={headers}>
           {patientList.map(p => (
-            <tr key={p.id} className="hover:bg-[#F5F7FA] transition-colors cursor-pointer group">
+            <tr 
+              key={p.id} 
+              style={{ backgroundColor: "#ffffff", borderBottom: "1px solid #f1f5f9" }} 
+              className="hover:!bg-slate-50 transition-colors cursor-pointer group"
+            >
+              {/* Nama Pasien */}
               <td className="px-8 py-5 flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-[#1877F2]">
+                <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: "#eff6ff", color: "#2563eb" }}>
                   <FaUserCircle size={24}/> 
                 </div>
-                <span className="font-bold text-[#232323]">{p.name}</span>
+                <span className="font-bold" style={{ color: "#0f172a" }}>{p.name}</span>
               </td>
-              <td className="px-8 py-5 text-sm text-[#718EBF]">
-                <span className="flex items-center gap-2"><FaTint className="text-blue-400" /> {p.skin}</span>
+              
+              {/* Kondisi Kulit */}
+              <td className="px-8 py-5 text-sm">
+                <span className="flex items-center gap-2" style={{ color: "#475569" }}>
+                  <FaTint style={{ color: "#3b82f6" }} /> {p.skin}
+                </span>
               </td>
-              <td className="px-8 py-5 text-sm font-semibold text-[#232323]">{p.doctor}</td>
+              
+              {/* Dokter */}
+              <td className="px-8 py-5 text-sm font-semibold" style={{ color: "#0f172a" }}>{p.doctor}</td>
+              
+              {/* Status Badge */}
               <td className="px-8 py-5">
                 <Badge variant={p.status === 'Active Treatment' ? 'active' : 'default'}>
                   {p.status}
                 </Badge>
               </td>
-              <td className="px-8 py-5 text-sm text-[#B1B1B1]">{p.lastVisit}</td>
+              
+              {/* Terakhir Berkunjung */}
+              <td className="px-8 py-5 text-sm" style={{ color: "#94a3b8" }}>{p.lastVisit}</td>
             </tr>
           ))}
         </Table>
-      </Card>
+      </div>
     </div>
   );
 }

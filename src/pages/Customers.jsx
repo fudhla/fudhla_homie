@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { FaSearch, FaPlus, FaPhone, FaCrown, FaFilter, FaEllipsisH } from "react-icons/fa";
 import Card from "../components/Card";
 import Badge from "../components/Badge";
-import Button from "../components/Button";
 
 const customersData = [
   { id: 1, name: "Rina Aprilia", phone: "0812-7766-5544", type: "Platinum", visits: 24, spend: "12.5M", avatar: "RA", color: "bg-[#E0F2FE] text-[#0369A1]" },
@@ -19,7 +18,7 @@ export default function Customers() {
     <div className="p-8 bg-[#F0F9FF] min-h-screen font-sans text-[#0F172A]">
       
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6 relative z-50">
         <div>
           <h1 className="text-3xl font-bold text-[#0F172A] flex items-center gap-3">
             Database Member <FaCrown className="text-[#D97706] text-xl animate-bounce"/>
@@ -27,13 +26,13 @@ export default function Customers() {
           <p className="text-[#0284C7] font-medium mt-1">Sistem Manajemen Loyalitas Pasien GlowCare</p>
         </div>
         
-        <Button 
-          variant="cyan" 
+        {/* Tombol yang sudah diperbaiki menggunakan HTML bawaan & z-index aman */}
+        <button 
           onClick={() => navigate("/patients/add")}
-          className="px-8 py-3.5 rounded-full text-sm flex items-center gap-2"
+          className="px-8 py-3.5 rounded-full text-sm font-bold flex items-center gap-2 bg-[#06B6D4] text-white hover:bg-[#0891B2] transition-all shadow-md shadow-cyan-500/20 cursor-pointer active:scale-95"
         >
           <FaPlus size={12}/> Daftarkan Member Baru
-        </Button>
+        </button>
       </div>
 
       {/* Filter & Search Bar */}
@@ -48,9 +47,10 @@ export default function Customers() {
             className="w-full pl-14 pr-6 py-4 rounded-full bg-white border-none shadow-sm focus:ring-2 focus:ring-[#0284C7]/20 text-[#0F172A] placeholder:text-[#0F172A]/30 transition-all" 
           />
         </div>
-        <Button variant="light" className="flex items-center gap-2 px-6 py-4 rounded-full text-[#0F172A]/60 text-sm shadow-sm">
+        
+        <button className="flex items-center gap-2 px-6 py-4 rounded-full bg-white text-[#0F172A]/60 text-sm font-bold shadow-sm hover:bg-slate-50 transition-colors cursor-pointer">
           <FaFilter size={12} /> Filter Kategori
-        </Button>
+        </button>
       </div>
 
       {/* Grid Cards */}
@@ -67,7 +67,7 @@ export default function Customers() {
                 </div>
                 
                 <div className="flex flex-col items-end gap-2">
-                   <button className="text-[#0F172A]/20 hover:text-[#0284C7] transition-colors">
+                   <button className="text-[#0F172A]/20 hover:text-[#0284C7] transition-colors cursor-pointer">
                       <FaEllipsisH />
                    </button>
                    <Badge variant={c.type.toLowerCase()}>
@@ -94,7 +94,7 @@ export default function Customers() {
                 </div>
               </div>
               
-              <button className="w-full mt-8 py-4 rounded-2xl bg-[#F0F9FF] text-[#0284C7] text-xs font-bold uppercase tracking-widest hover:bg-[#0284C7] hover:text-white transition-all transform group-hover:translate-y-[-4px]">
+              <button className="w-full mt-8 py-4 rounded-2xl bg-[#F0F9FF] text-[#0284C7] text-xs font-bold uppercase tracking-widest hover:bg-[#0284C7] hover:text-white transition-all transform group-hover:translate-y-[-4px] cursor-pointer">
                 Lihat Detail Profil
               </button>
             </div>

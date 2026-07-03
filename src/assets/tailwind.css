@@ -1,8 +1,10 @@
 @import "tailwindcss";
 
+/* 1. PAKSA BODY MENGGUNAKAN LIGHT MODE SECARA GLOBAL */
 body {
-    @apply font-barlow;
+    @apply font-barlow bg-latar text-teks min-h-screen antialiased;
 }
+
 @font-face {
     font-family: 'Barlow';
     src: url('/fonts/Barlow-Regular.ttf');
@@ -13,15 +15,25 @@ body {
     src: url('/fonts/Poppins-Regular.ttf');
 }
 
+/* 2. ATUR VARIABEL WARNA PREMIUM LIGHT MODE DI SINI */
 @theme {
     --font-barlow: "Barlow", sans-serif;
     --font-poppins: "Poppins", sans-serif;
-    --color-latar: #f3f4f6;
-    --color-teks: #374151; 
-    --color-teks-samping: #6b7280;
-    --color-garis: #e5e7eb; 
+    
+    /* Latar belakang abu-biru muda super bersih khas dashboard modern */
+    --color-latar: #F4F7FA; 
+    
+    /* Warna putih bersih untuk komponen Card, Container, dan Sidebar */
+    --color-kartu: #ffffff; 
+    
+    /* Warna teks utama dan sekunder yang kontras & terbaca jelas */
+    --color-teks: #0f172a; 
+    --color-teks-samping: #64748b;
+    --color-garis: #e2e8f0; 
+    
+    /* Warna aksen jenuh cerah sesuai gambar referensi dashboard kamu */
     --color-hijau: #00B074; 
     --color-merah: #ef4444; 
-    --color-biru: #3b82f6;
+    --color-biru: #2563eb; /* Biru cerah jenuh (Blue 600) */
     --color-kuning: #f59e0b; 
 }
