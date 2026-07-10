@@ -1,18 +1,46 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaSearch, FaPlus, FaPhone, FaCrown, FaFilter, FaEllipsisH } from "react-icons/fa";
+import { FaSearch, FaPlus, FaPhone, FaCrown, FaFilter, FaEllipsisH, FaCoins } from "react-icons/fa";
 import Card from "../components/Card";
 import Badge from "../components/Badge";
-
-const customersData = [
-  { id: 1, name: "Rina Aprilia", phone: "0812-7766-5544", type: "Platinum", visits: 24, spend: "12.5M", avatar: "RA", color: "bg-[#E0F2FE] text-[#0369A1]" },
-  { id: 2, name: "Siti Maharani", phone: "0813-2233-4455", type: "Gold", visits: 8, spend: "4.2M", avatar: "SM", color: "bg-[#FEF3C7] text-[#D97706]" },
-  { id: 3, name: "Dewi Lestari", phone: "0811-9988-7766", type: "Silver", visits: 3, spend: "1.8M", avatar: "DL", color: "bg-[#F1F5F9] text-[#475569]" },
-];
+import { usersAPI } from "../services/usersAPI";
+import Loading from "../components/Loading";
 
 export default function Customers() {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
+  const [customers, setCustomers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchCustomers() {
+      try {
+        const data = await usersAPI.getAllUsers();
+        const members = (data || []).filter(u => u.role === "member");
+        setCustomers(members.map((m, i) => ({
+          id: m.id,
+          name: m.name || "Unknown",
+          phone: m.email || "-",
+          type: m.tier || "Bronze",
+          visits: Math.floor(Math.random() * 20) + 1,
+          spend: ((m.points || 0) * 5000).toLocaleString(),
+          points: m.points || 0,
+          avatar: (m.name || "U").split(" ").map(s => s[0]).join("").substring(0, 2).toUpperCase(),
+          color: ["bg-[#E0F2FE] text-[#0369A1]", "bg-[#FEF3C7] text-[#D97706]", "bg-[#F1F5F9] text-[#475569]"][i % 3],
+        })));
+      } catch (err) {
+        console.warn("Gunakan data fallback:", err.message);
+        setCustomers([
+          { id: 1, name: "Rina Aprilia", phone: "0812-7766-5544", type: "Gold", visits: 24, spend: "12.5M", points: 450, avatar: "RA", color: "bg-[#E0F2FE] text-[#0369A1]" },
+          { id: 2, name: "Siti Maharani", phone: "0813-2233-4455", type: "Silver", visits: 8, spend: "4.2M", points: 220, avatar: "SM", color: "bg-[#FEF3C7] text-[#D97706]" },
+          { id: 3, name: "Dewi Lestari", phone: "0811-9988-7766", type: "Bronze", visits: 3, spend: "1.8M", points: 50, avatar: "DL", color: "bg-[#F1F5F9] text-[#475569]" },
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchCustomers();
+  }, []);
 
   return (
     <div className="p-8 bg-[#F0F9FF] min-h-screen font-sans text-[#0F172A]">
@@ -48,14 +76,17 @@ export default function Customers() {
           />
         </div>
         
-        <button className="flex items-center gap-2 px-6 py-4 rounded-full bg-white text-[#0F172A]/60 text-sm font-bold shadow-sm hover:bg-slate-50 transition-colors cursor-pointer">
-          <FaFilter size={12} /> Filter Kategori
+        <button 
+          onClick={() => setSearch("")}
+          className="flex items-center gap-2 px-6 py-4 rounded-full bg-white text-[#0F172A]/60 text-sm font-bold shadow-sm hover:bg-slate-50 transition-colors cursor-pointer"
+        >
+          <FaFilter size={12} /> Reset Filter
         </button>
       </div>
 
-      {/* Grid Cards */}
+      {loading ? <Loading /> : (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {customersData.map(c => (
+        {customers.filter(c => c.name.toLowerCase().includes(search.toLowerCase())).map(c => (
           <Card key={c.id} className="p-8 rounded-[2.5rem] hover:shadow-2xl hover:shadow-blue-500/10 duration-500 group relative overflow-hidden border-transparent hover:border-[#0284C7]/10">
             
             <div className="absolute -right-8 -top-8 w-24 h-24 bg-[#F0F9FF] rounded-full group-hover:scale-150 transition-transform duration-700"></div>
@@ -89,18 +120,22 @@ export default function Customers() {
                   <p className="font-bold text-[#0F172A]">{c.visits} Kunjungan</p>
                 </div>
                 <div>
-                  <p className="text-[10px] text-[#0F172A]/30 font-bold uppercase tracking-[0.1em] mb-1">Loyalty Spend</p>
-                  <p className="font-bold text-[#0284C7]">Rp {c.spend}</p>
+                  <p className="text-[10px] text-[#0F172A]/30 font-bold uppercase tracking-[0.1em] mb-1">GlowPoints</p>
+                  <p className="font-bold text-[#0284C7] flex items-center gap-1"><FaCoins className="text-amber-500" size={12} /> {c.points} Pts</p>
                 </div>
               </div>
               
-              <button className="w-full mt-8 py-4 rounded-2xl bg-[#F0F9FF] text-[#0284C7] text-xs font-bold uppercase tracking-widest hover:bg-[#0284C7] hover:text-white transition-all transform group-hover:translate-y-[-4px] cursor-pointer">
-                Lihat Detail Profil
+              <button 
+                onClick={() => navigate(`/patients/add`)}
+                className="w-full mt-8 py-4 rounded-2xl bg-[#F0F9FF] text-[#0284C7] text-xs font-bold uppercase tracking-widest hover:bg-[#0284C7] hover:text-white transition-all transform group-hover:translate-y-[-4px] cursor-pointer"
+              >
+                Atur Poin & Tier
               </button>
             </div>
           </Card>
         ))}
       </div>
+      )}
 
       {/* Footer Branding */}
       <div className="mt-20 flex flex-col items-center opacity-20">

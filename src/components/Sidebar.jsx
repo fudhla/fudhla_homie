@@ -64,7 +64,14 @@ export default function Sidebar() {
       </nav>
 
       <div className="p-4 border-t border-[#E6EFF5]">
-        <button className="w-full flex items-center gap-4 py-4 px-4 text-[#B1B1B1] hover:text-red-500 transition-colors">
+        <button 
+          onClick={() => {
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.href = "/login";
+          }}
+          className="w-full flex items-center gap-4 py-4 px-4 text-[#B1B1B1] hover:text-red-500 transition-colors cursor-pointer"
+        >
           <FaSignOutAlt size={20} />
           <span className="font-bold text-[15px]">Logout</span>
         </button>

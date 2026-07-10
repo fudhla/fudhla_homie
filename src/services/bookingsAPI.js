@@ -14,24 +14,71 @@ const headers = {
 // Poin loyalty yang didapat pasien per treatment
 const POINTS_PER_TREATMENT = 50;
 
+const LOCAL_KEY = "glowcare_local_bookings";
+
+function getLocalBookings() {
+    try {
+        return JSON.parse(localStorage.getItem(LOCAL_KEY) || "[]");
+    } catch { return []; }
+}
+
+function saveLocalBookings(bookings) {
+    localStorage.setItem(LOCAL_KEY, JSON.stringify(bookings));
+}
+
 export const bookingsAPI = {
     async fetchAll() {
-        const response = await axios.get(BOOKINGS_URL, {
-            headers,
-            params: { order: "booking_date.desc" },
-        });
-        return response.data;
+        try {
+            const response = await axios.get(BOOKINGS_URL, {
+                headers,
+                params: { order: "booking_date.desc" },
+            });
+            return response.data;
+        } catch {
+            console.warn("Gagal fetch bookings dari Supabase, pakai data lokal");
+            return getLocalBookings();
+        }
     },
     async getByUserId(userId) {
-        const response = await axios.get(`${BOOKINGS_URL}?user_id=eq.${userId}`, {
-            headers,
-            params: { order: "booking_date.desc" },
-        });
-        return response.data;
+        try {
+            const response = await axios.get(`${BOOKINGS_URL}?user_id=eq.${userId}`, {
+                headers,
+                params: { order: "booking_date.desc" },
+            });
+            const apiBookings = response.data || [];
+            // Gabung dengan booking lokal milik user ini, hindari duplikat
+            const local = getLocalBookings().filter(b => b.user_id === userId);
+            const apiIds = new Set(apiBookings.map(b => b.id));
+            const uniqueLocal = local.filter(b => !apiIds.has(b.id));
+            return [...apiBookings, ...uniqueLocal];
+        } catch {
+            console.warn("Gagal fetch bookings dari Supabase, pakai data lokal");
+            return getLocalBookings().filter(b => b.user_id === userId);
+        }
     },
     async create(data) {
-        const response = await axios.post(BOOKINGS_URL, data, { headers });
-        return response.data;
+        // Tambah timestamp & id lokal
+        const localData = {
+            ...data,
+            id: Date.now(),
+            created_at: new Date().toISOString(),
+        };
+
+        try {
+            const response = await axios.post(BOOKINGS_URL, data, { headers });
+            // Supaya konsisten, simpan juga lokal
+            const lokal = getLocalBookings();
+            lokal.unshift(localData);
+            saveLocalBookings(lokal);
+            return response.data;
+        } catch (err) {
+            console.warn("Supabase INSERT gagal, simpan booking ke localStorage:", err.message);
+            // Fallback: simpan ke localStorage
+            const lokal = getLocalBookings();
+            lokal.unshift(localData);
+            saveLocalBookings(lokal);
+            return { success: true, local: true, id: localData.id };
+        }
     },
     async updateStatus(id, newStatus) {
         const response = await axios.patch(

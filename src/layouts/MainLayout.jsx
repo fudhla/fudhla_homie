@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
-import { FaChartPie, FaUserInjured, FaConciergeBell, FaUsers, FaSignOutAlt } from "react-icons/fa";
+import { FaChartPie, FaUserInjured, FaConciergeBell, FaUsers, FaSignOutAlt, FaBell } from "react-icons/fa";
 import Loading from "../components/Loading";
 
 export default function MainLayout() {
@@ -123,11 +123,21 @@ export default function MainLayout() {
       <div className="flex-1 flex flex-col min-h-screen">
         
         {/* Top Navbar */}
-        <header className="!bg-white border-b border-slate-200/80 h-16 flex items-center justify-end px-8 sticky top-0 z-40" style={{ backgroundColor: "#ffffff" }}>
+        <header className="!bg-white border-b border-slate-200/80 h-16 flex items-center justify-between px-8 sticky top-0 z-40" style={{ backgroundColor: "#ffffff" }}>
+          <span className="text-sm text-slate-500 font-medium">
+            {location.pathname === "/dashboard" && "Dashboard Overview"}
+            {location.pathname === "/patients" && "Manajemen Pasien"}
+            {location.pathname === "/patients/add" && "Tambah Pasien Baru"}
+            {location.pathname === "/customers" && "Database Member"}
+            {location.pathname === "/treatments" && "Katalog Perawatan"}
+          </span>
           <div className="flex items-center gap-3">
+            <button className="w-9 h-9 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors cursor-pointer relative">
+              <FaBell size={15} />
+            </button>
             <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></div>
             <span className="text-xs font-bold !text-slate-700 uppercase tracking-wider !bg-slate-50 px-3 py-1.5 rounded-full border border-slate-200">
-              Admin
+              Online
             </span>
           </div>
         </header>

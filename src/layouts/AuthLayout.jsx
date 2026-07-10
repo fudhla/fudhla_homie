@@ -29,8 +29,11 @@ export default function AuthLayout() {
           <p className="text-lg text-blue-100/70 mb-10 max-w-md leading-relaxed">
             Sistem manajemen klinik kecantikan paling populer di Asia Tenggara.
           </p>
-          <button className="px-8 py-3 bg-[#0066FF] hover:bg-blue-600 rounded-xl text-sm font-bold shadow-xl transition-all active:scale-95">
-            Read More
+          <button 
+            onClick={() => window.open("https://glowcare-clinic.vercel.app", "_blank")}
+            className="px-8 py-3 bg-[#0066FF] hover:bg-blue-600 rounded-xl text-sm font-bold shadow-xl transition-all active:scale-95 cursor-pointer"
+          >
+            Pelajari Lebih Lanjut
           </button>
         </motion.div>
       </div>

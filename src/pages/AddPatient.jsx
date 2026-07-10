@@ -1,14 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaCheck, FaUser, FaNotesMedical } from "react-icons/fa";
-
-// 🛡️ AMAN: Menggunakan fallback mock jika file supabaseClient di luar belum siap
-// Ini mencegah compiler Vite patah atau melempar Error 500
-const supabaseMock = {
-  from: () => ({
-    insert: async () => ({ error: null })
-  })
-};
+import { usersAPI } from "../services/usersAPI";
 
 const skinTypeOptions = [
   { emoji: "💧", label: "Kering" },
@@ -39,22 +32,17 @@ export default function AddPatient() {
     try {
       setLoading(true);
       
-      // Menggunakan mock lokal agar tidak memicu broken-import crash
-      const { error } = await supabaseMock.from("users").insert([
-        {
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          skin_type: formData.skin_type,
-          medical_notes: formData.medical_notes,
-          role: "member",
-          created_at: new Date().toISOString()
-        }
-      ]);
+      // Kirim data ke Supabase via usersAPI dengan default CRM
+      await usersAPI.registerUser({
+        name: formData.name,
+        email: formData.email,
+        password: formData.phone,
+        role: "member",
+        tier: "Bronze",
+        points: 0,
+      });
 
-      if (error) throw error;
-
-      alert("Pasien baru berhasil didaftarkan! (Local Sync)");
+      alert("Pasien baru berhasil didaftarkan!");
       navigate("/patients"); 
     } catch (error) {
       console.error("Gagal menambah pasien:", error.message);

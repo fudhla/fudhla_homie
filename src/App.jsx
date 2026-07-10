@@ -34,9 +34,9 @@ import NotFound from "./pages/NotFound";
 // 4. IMPORT PAGES: MEMBER PORTAL
 // ==========================================
 import MemberList from "./pages/member/MemberList";
-import MemberCard from "./pages/member/MemberCard"; 
 import PromoSpesial from "./pages/member/PromoSpesial";  
 import RiwayatKlinis from "./pages/member/RiwayatKlinis"; 
+import BookingTreatment from "./pages/member/BookingTreatment";
 
 // 👑 NAVBAR LAYOUT KHUSUS MEMBER PORTAL (TERPISAH DARI MAINLAYOUT ADMIN)
 function MemberPortalLayout() {
@@ -70,6 +70,9 @@ function MemberPortalLayout() {
             <div className="hidden md:flex items-center gap-6 text-sm font-bold">
               <Link to="/member" className="text-slate-600 hover:text-blue-600 py-5 transition-colors cursor-pointer block">
                 Dashboard
+              </Link>
+              <Link to="/member/booking" className="text-slate-600 hover:text-blue-600 py-5 transition-colors cursor-pointer block">
+                Booking Treatment
               </Link>
               <Link to="/member/promo" className="text-slate-600 hover:text-blue-600 py-5 transition-colors cursor-pointer block">
                 Promo Spesial
@@ -115,7 +118,7 @@ function App() {
       {/* 👑 PORTAL MEMBER (MENGGUNAKAN NESTED ROUTING LAYOUT SENDIRI) */}
       <Route path="/member" element={<MemberPortalLayout />}>
         <Route index element={<MemberList />} />
-        <Route path="card" element={<MemberCard />} />
+        <Route path="booking" element={<BookingTreatment />} />
         <Route path="promo" element={<PromoSpesial />} />       
         <Route path="history" element={<RiwayatKlinis />} />    
       </Route>
