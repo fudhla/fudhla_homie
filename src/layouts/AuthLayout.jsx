@@ -25,7 +25,7 @@ export default function AuthLayout() {
           transition={{ duration: 0.8 }}
           className="relative z-10"
         >
-          <h1 className="text-5xl font-black mb-4 tracking-tight">GlowFinance</h1>
+          <h1 className="text-5xl font-black mb-4 tracking-tight">GlowCare</h1>
           <p className="text-lg text-blue-100/70 mb-10 max-w-md leading-relaxed">
             Sistem manajemen klinik kecantikan paling populer di Asia Tenggara.
           </p>

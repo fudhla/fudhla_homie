@@ -34,8 +34,18 @@ export default function Login() {
       }
 
       // 3. Jika sukses, simpan sesi status ke localStorage
-      localStorage.setItem("user", "true"); // Mempertahankan key lama agar tidak error
-      localStorage.setItem("userSession", JSON.stringify(user)); // Menyimpan detail profile & role
+      localStorage.setItem("user", "true");
+      // Simpan userSession lengkap dengan default CRM (tier & points)
+      // agar widget member di GuestPage bisa menampilkan data loyalty
+      localStorage.setItem("userSession", JSON.stringify({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        tier: user.tier || "Bronze",
+        points: user.points ?? 0,
+        created_at: user.created_at,
+      }));
       
       // 4. Pengalihan halaman otomatis berdasarkan role user dari database
       if (user.role === "member") {

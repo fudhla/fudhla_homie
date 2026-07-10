@@ -1,10 +1,34 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
 import { FaChartPie, FaUserInjured, FaConciergeBell, FaUsers, FaSignOutAlt } from "react-icons/fa";
+import Loading from "../components/Loading";
 
 export default function MainLayout() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [checking, setChecking] = useState(true);
+
+  useEffect(() => {
+    // Cek session di localStorage
+    const stored = localStorage.getItem("userSession");
+    if (!stored) {
+      navigate("/login", { replace: true });
+      return;
+    }
+    try {
+      const user = JSON.parse(stored);
+      if (user.role !== "admin") {
+        navigate("/member", { replace: true });
+        return;
+      }
+    } catch {
+      navigate("/login", { replace: true });
+      return;
+    }
+    setChecking(false);
+  }, [navigate]);
+
+  if (checking) return <Loading />;
 
   const handleLogout = () => {
     localStorage.clear();

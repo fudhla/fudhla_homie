@@ -14,12 +14,30 @@ export const usersAPI = {
         const response = await axios.get(API_URL, { headers });
         return response.data;
     },
+    /**
+     * Mendaftarkan user baru dengan default CRM:
+     * role: 'member', tier: 'Bronze', points: 0
+     */
     async registerUser(data) {
-        const response = await axios.post(API_URL, data, { headers });
+        const payload = {
+            ...data,
+            role: data.role || 'member',
+            tier: data.tier || 'Bronze',
+            points: data.points ?? 0,
+        };
+        const response = await axios.post(API_URL, payload, { headers });
         return response.data;
     },
     async getUserByEmail(email) {
         const response = await axios.get(`${API_URL}?email=eq.${email}`, { headers });
+        return response.data;
+    },
+    /** Ambil semua user (untuk dashboard admin & member list) */
+    async getAllUsers() {
+        const response = await axios.get(API_URL, {
+            headers,
+            params: { order: 'created_at.desc' },
+        });
         return response.data;
     },
     async deleteUser(id) {
