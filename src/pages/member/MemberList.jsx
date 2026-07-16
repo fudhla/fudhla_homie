@@ -3,7 +3,7 @@ import { Navigate, Link } from "react-router-dom";
 import { 
   FaUserCircle, FaTrophy, FaCoins, FaCalendarAlt, FaClock, FaGift,
   FaFileMedical, FaStar, FaArrowRight, FaGem, FaMapMarkerAlt,
-  FaPhoneAlt, FaCalendarCheck, FaSpinner, FaCheckCircle
+  FaPhoneAlt, FaCalendarCheck, FaSpinner, FaCheckCircle, FaWallet
 } from "react-icons/fa";
 import { bookingsAPI } from "../../services/bookingsAPI";
 import Loading from "../../components/Loading";
@@ -48,7 +48,7 @@ export default function MemberList() {
   const tier = tierConfig[tierKey];
   const TierIcon = tier.icon;
 
-  const upcomingBookings = bookings.filter(b => b.status === "Menunggu" || b.status === "Dikonfirmasi" || b.status === "On Progress");
+  const upcomingBookings = bookings.filter(b => b.status === "Menunggu" || b.status === "Menunggu Pembayaran" || b.status === "Dikonfirmasi" || b.status === "On Progress");
   const historyBookings = bookings.filter(b => b.status === "Selesai" || b.status === "Dibatalkan");
 
   const totalVisits = historyBookings.filter(b => b.status === "Selesai").length;
@@ -201,13 +201,15 @@ export default function MemberList() {
                 >
                   <div className="flex items-center gap-4">
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white text-sm ${
-                      b.status === "Menunggu" ? "bg-amber-500" :
+                      b.status === "Menunggu Pembayaran" ? "bg-amber-500" :
                       b.status === "Dikonfirmasi" ? "bg-blue-500" :
-                      "bg-purple-500"
+                      b.status === "On Progress" ? "bg-purple-500" :
+                      "bg-amber-500"
                     }`}>
-                      {b.status === "Menunggu" ? <FaClock /> :
+                      {b.status === "Menunggu Pembayaran" ? <FaWallet /> :
                        b.status === "Dikonfirmasi" ? <FaCheckCircle /> :
-                       <FaSpinner />}
+                       b.status === "On Progress" ? <FaSpinner /> :
+                       <FaClock />}
                     </div>
                     <div>
                       <p className="font-bold text-slate-800 text-sm">{b.treatment_name || b.service || "Treatment"}</p>
@@ -215,15 +217,32 @@ export default function MemberList() {
                         <FaCalendarAlt size={10} /> {b.booking_date ? new Date(b.booking_date).toLocaleDateString("id-ID", { weekday: "long", year: "numeric", month: "long", day: "numeric" }) : "-"}
                         {b.booking_time && <><FaClock size={10} /> {b.booking_time}</>}
                       </p>
+                      {/* Status Pembayaran */}
+                      {b.payment_status && (
+                        <p className="text-[10px] mt-0.5 flex items-center gap-1">
+                          <FaWallet size={8} className={b.payment_status === "Lunas" ? "text-emerald-500" : "text-amber-500"} />
+                          <span className={b.payment_status === "Lunas" ? "text-emerald-600" : "text-amber-600"}>
+                            {b.payment_status === "Lunas" ? `Lunas • ${b.payment_method || "-"}` : b.payment_status}
+                          </span>
+                        </p>
+                      )}
                     </div>
                   </div>
-                  <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                    b.status === "Menunggu" ? "bg-amber-50 text-amber-600 border border-amber-200" :
-                    b.status === "Dikonfirmasi" ? "bg-blue-50 text-blue-600 border border-blue-200" :
-                    "bg-purple-50 text-purple-600 border border-purple-200"
-                  }`}>
-                    {b.status}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    {b.payment_status === "Lunas" && (
+                      <span className="text-[10px] bg-emerald-50 text-emerald-600 px-2 py-1 rounded-full border border-emerald-200 font-bold flex items-center gap-1">
+                        <FaCheckCircle size={8} /> Lunas
+                      </span>
+                    )}
+                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                      b.status === "Menunggu Pembayaran" ? "bg-amber-50 text-amber-600 border border-amber-200" :
+                      b.status === "Dikonfirmasi" ? "bg-blue-50 text-blue-600 border border-blue-200" :
+                      b.status === "On Progress" ? "bg-purple-50 text-purple-600 border border-purple-200" :
+                      "bg-slate-50 text-slate-500 border border-slate-200"
+                    }`}>
+                      {b.status}
+                    </span>
+                  </div>
                 </div>
               ))}
             </div>

@@ -131,6 +131,47 @@ export const bookingsAPI = {
         return { success: true, pointsAdded: POINTS_PER_TREATMENT };
     },
 
+    /**
+     * Update payment method & status booking, langsung ubah status jadi Dikonfirmasi
+     */
+    async updatePayment(id, data) {
+        try {
+            const response = await axios.patch(
+                `${BOOKINGS_URL}?id=eq.${id}`,
+                {
+                    payment_method: data.payment_method,
+                    payment_status: data.payment_status || "Lunas",
+                    status: data.status || "Dikonfirmasi",
+                },
+                { headers: { ...headers, Prefer: "return=representation" } }
+            );
+            
+            // Update juga di localStorage
+            const lokal = getLocalBookings();
+            const idx = lokal.findIndex(b => b.id === id);
+            if (idx !== -1) {
+                lokal[idx].payment_method = data.payment_method;
+                lokal[idx].payment_status = data.payment_status || "Lunas";
+                lokal[idx].status = data.status || "Dikonfirmasi";
+                saveLocalBookings(lokal);
+            }
+            
+            return response.data;
+        } catch (err) {
+            console.warn("Gagal update payment ke Supabase, simpan lokal:", err.message);
+            // Fallback: update localStorage
+            const lokal = getLocalBookings();
+            const idx = lokal.findIndex(b => b.id === id);
+            if (idx !== -1) {
+                lokal[idx].payment_method = data.payment_method;
+                lokal[idx].payment_status = data.payment_status || "Lunas";
+                lokal[idx].status = data.status || "Dikonfirmasi";
+                saveLocalBookings(lokal);
+            }
+            return { success: true, local: true };
+        }
+    },
+
     async delete(id) {
         await axios.delete(`${BOOKINGS_URL}?id=eq.${id}`, { headers });
     },

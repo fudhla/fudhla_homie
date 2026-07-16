@@ -1,32 +1,25 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React from "react";
+import { useNavigate, Navigate } from "react-router-dom";
 import {
   FaStar, FaUserPlus, FaSignInAlt, FaMapMarkerAlt, FaPhoneAlt, FaClock,
-  FaUserMd, FaMicrochip, FaShieldAlt, FaCrown, FaGem, FaChartPie,
-  FaUsers, FaCalendarCheck, FaArrowRight, FaTrophy,
-  FaCoins, FaSignOutAlt
+  FaUserMd, FaMicrochip, FaShieldAlt, FaCrown, FaGem, FaArrowRight
 } from "react-icons/fa";
 
 export default function GuestPage() {
   const navigate = useNavigate();
-  const [session, setSession] = useState(null);
-  const [role, setRole] = useState("guest");
-  const [userName, setUserName] = useState("");
 
-  // Baca userSession dari localStorage saat komponen di-mount
-  useEffect(() => {
-    const stored = localStorage.getItem("userSession");
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        setSession(parsed);
-        setRole(parsed.role || "guest");
-        setUserName(parsed.name || parsed.email || "");
-      } catch {
-        setRole("guest");
-      }
+  // 🔐 CEK LANGSUNG dari localStorage, tanpa nunggu state
+  // supaya redirect langsung terjadi, tidak ada flash guest content
+  const stored = localStorage.getItem("userSession");
+  if (stored) {
+    try {
+      const parsed = JSON.parse(stored);
+      if (parsed.role === "member") return <Navigate to="/member" replace />;
+      if (parsed.role === "admin") return <Navigate to="/dashboard" replace />;
+    } catch {
+      // ignore parse error, lanjut sebagai guest
     }
-  }, []);
+  }
 
   // Data Layanan Perawatan — sesuai PRD Tahap 1
   const treatments = [
@@ -77,17 +70,10 @@ export default function GuestPage() {
     },
   ];
 
-  const stats = [
-    { icon: FaUsers, label: "Pasien Aktif", value: "1,284+" },
-    { icon: FaCalendarCheck, label: "Booking Hari Ini", value: "15" },
-    { icon: FaChartPie, label: "Omset Bulanan", value: "Rp 8.2M" },
-  ];
-
   // ──────────────────────────────────────────────
   // RENDER BAGIAN GUEST (PUBLIK)
   // ──────────────────────────────────────────────
-  if (role === "guest") {
-    return (
+  return (
       <div className="min-h-screen bg-white font-sans text-slate-800">
         {/* 1. NAVIGATION BAR */}
         <nav className="bg-white/90 backdrop-blur-lg border-b border-slate-100 sticky top-0 z-50 px-6 py-4">
@@ -294,165 +280,4 @@ export default function GuestPage() {
         </footer>
       </div>
     );
-  }
-
-  // ──────────────────────────────────────────────
-  // RENDER BAGIAN MEMBER
-  // ──────────────────────────────────────────────
-  if (role === "member") {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 font-sans">
-        {/* Navbar Member */}
-        <nav className="bg-white/90 backdrop-blur-lg border-b border-slate-100 sticky top-0 z-50 px-6 py-4">
-          <div className="max-w-7xl mx-auto flex justify-between items-center">
-            <div className="flex items-center gap-3">
-              <div className="bg-gradient-to-br from-pink-500 to-blue-600 p-2 rounded-xl text-white">
-                <FaStar className="text-lg text-amber-200" />
-              </div>
-              <span className="text-lg font-black text-slate-900">GlowCare</span>
-            </div>
-            <button
-              onClick={() => {
-                localStorage.clear();
-                navigate("/");
-              }}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-slate-500 hover:text-rose-600 transition-colors cursor-pointer"
-            >
-              <FaSignOutAlt /> Keluar
-            </button>
-          </div>
-        </nav>
-
-        {/* Hero Member */}
-        <section className="max-w-5xl mx-auto px-6 py-16">
-          <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 rounded-3xl p-8 md:p-12 text-white relative overflow-hidden shadow-2xl">
-            <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
-            <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
-            <div className="relative z-10">
-              <span className="bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                ✨ Selamat Datang Kembali
-              </span>
-              <h1 className="text-3xl md:text-4xl font-extrabold mt-4">
-                Halo, {userName || "Pasien GlowCare"}! 👋
-              </h1>
-              <p className="mt-3 text-purple-100 text-sm max-w-lg leading-relaxed">
-                Nikmati berbagai layanan eksklusif dan pantau perkembangan perawatan kulit Anda.
-              </p>
-
-              {/* Widget CRM — Tier & Poin */}
-              <div className="mt-8 flex flex-wrap gap-6">
-                <div className="bg-white/15 backdrop-blur-sm rounded-2xl px-6 py-4 border border-white/10">
-                  <p className="text-[10px] text-purple-200 font-bold uppercase tracking-wider">Status Member</p>
-                  <p className="text-xl font-black mt-1 flex items-center gap-2">
-                    <FaTrophy className="text-amber-300" />
-                    {session?.tier || "Bronze"}
-                  </p>
-                </div>
-                <div className="bg-white/15 backdrop-blur-sm rounded-2xl px-6 py-4 border border-white/10">
-                  <p className="text-[10px] text-purple-200 font-bold uppercase tracking-wider">GlowPoints</p>
-                  <p className="text-xl font-black mt-1 flex items-center gap-2">
-                    <FaCoins className="text-amber-300" />
-                    {session?.points || 0} Poin
-                  </p>
-                </div>
-              </div>
-
-              <button
-                onClick={() => navigate("/member")}
-                className="mt-8 px-8 py-3.5 bg-white text-purple-700 font-bold rounded-xl shadow-lg hover:shadow-xl transition-all cursor-pointer active:scale-95 text-sm"
-              >
-                Buka Portal Pasien <FaArrowRight className="inline ml-2" size={12} />
-              </button>
-            </div>
-          </div>
-        </section>
-
-        {/* Footer */}
-        <footer className="text-center py-8 text-xs text-slate-400">
-          &copy; {new Date().getFullYear()} GlowCare Aesthetic Clinic.
-        </footer>
-      </div>
-    );
-  }
-
-  // ──────────────────────────────────────────────
-  // RENDER BAGIAN ADMIN
-  // ──────────────────────────────────────────────
-  if (role === "admin") {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 to-blue-950 font-sans">
-        {/* Navbar Admin */}
-        <nav className="bg-slate-900/90 backdrop-blur-lg border-b border-slate-800 sticky top-0 z-50 px-6 py-4">
-          <div className="max-w-7xl mx-auto flex justify-between items-center">
-            <div className="flex items-center gap-3">
-              <div className="bg-blue-600 p-2 rounded-xl text-white shadow-lg shadow-blue-500/20">
-                <FaChartPie className="text-lg" />
-              </div>
-              <span className="text-lg font-black text-white">GlowCare</span>
-              <span className="text-[10px] bg-blue-500/20 text-blue-300 px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">
-                Admin Panel
-              </span>
-            </div>
-            <button
-              onClick={() => {
-                localStorage.clear();
-                navigate("/");
-              }}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-slate-400 hover:text-rose-400 transition-colors cursor-pointer"
-            >
-              <FaSignOutAlt /> Keluar
-            </button>
-          </div>
-        </nav>
-
-        {/* Hero Admin */}
-        <section className="max-w-5xl mx-auto px-6 py-16">
-          <div className="bg-gradient-to-r from-slate-800 via-blue-900 to-slate-800 rounded-3xl p-8 md:p-12 text-white relative overflow-hidden shadow-2xl border border-slate-700/50">
-            <div className="absolute -top-20 -right-20 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl"></div>
-            <div className="relative z-10">
-              <span className="bg-blue-500/20 text-blue-300 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                🔒 Panel Manajemen Internal
-              </span>
-              <h1 className="text-3xl md:text-4xl font-extrabold mt-4">
-                Panel Manajemen Internal GlowCare
-              </h1>
-              <p className="mt-3 text-slate-400 text-sm max-w-lg leading-relaxed">
-                Selamat datang kembali, <strong className="text-white">{userName || "Admin"}</strong>. Pantau operasional klinik secara real-time.
-              </p>
-
-              {/* Quick-Stats Mini CRM */}
-              <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-                {stats.map((s, i) => (
-                  <div key={i} className="bg-white/10 backdrop-blur-sm rounded-2xl px-5 py-4 border border-white/5">
-                    <div className="flex items-center gap-3">
-                      <s.icon className="text-blue-400 text-lg" />
-                      <div>
-                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{s.label}</p>
-                        <p className="text-xl font-black mt-0.5">{s.value}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <button
-                onClick={() => navigate("/dashboard")}
-                className="mt-8 px-8 py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 transition-all cursor-pointer active:scale-95 text-sm"
-              >
-                Masuk Dashboard Utama <FaArrowRight className="inline ml-2" size={12} />
-              </button>
-            </div>
-          </div>
-        </section>
-
-        {/* Footer */}
-        <footer className="text-center py-8 text-xs text-slate-600">
-          &copy; {new Date().getFullYear()} GlowCare • Internal Management System
-        </footer>
-      </div>
-    );
-  }
-
-  // Fallback (tidak seharusnya terjadi)
-  return null;
 }

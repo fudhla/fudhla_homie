@@ -42,5 +42,11 @@ export const usersAPI = {
     },
     async deleteUser(id) {
         await axios.delete(`${API_URL}?id=eq.${id}`, { headers });
+    },
+    async updateUser(id, data) {
+        const response = await axios.patch(`${API_URL}?id=eq.${id}`, data, {
+            headers: { ...headers, Prefer: "return=representation" },
+        });
+        return response.data;
     }
 };

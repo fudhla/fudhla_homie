@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaCalendarAlt, FaClock, FaGem, FaStar, FaCrown, FaConciergeBell, FaTimes, FaCheck, FaUser, FaEnvelope } from "react-icons/fa";
+import { FaCalendarAlt, FaClock, FaGem, FaStar, FaCrown, FaConciergeBell, FaTimes, FaCheck, FaUser, FaEnvelope, FaWallet } from "react-icons/fa";
 import Card from "../components/Card";
 import { treatmentsAPI } from "../services/treatmentsAPI";
 import { bookingsAPI } from "../services/bookingsAPI";
@@ -189,14 +189,52 @@ export default function Treatments() {
         ))}
       </div>
 
-      {/* Jadwal placeholder */}
+      {/* Jadwal Hari Ini */}
       <div>
-        <h2 className="text-xl font-bold text-[#343C6A] mb-6">Jadwal Hari Ini</h2>
-        <div className="bg-slate-50 border border-dashed border-slate-300 rounded-2xl p-10 text-center">
-          <FaConciergeBell className="text-4xl text-slate-300 mx-auto mb-3" />
-          <p className="text-sm text-slate-400 font-medium">
-            Booking yang sudah dibuat akan muncul di sini.
-          </p>
+        <h2 className="text-xl font-bold text-[#343C6A] mb-6">Jadwal & Booking Hari Ini</h2>
+        <div className="bg-white rounded-3xl border border-slate-200/60 overflow-hidden shadow-sm">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-slate-50 border-b border-slate-100">
+                  {["Pasien", "Treatment", "Jadwal", "Pembayaran", "Status"].map(h => (
+                    <th key={h} className="text-left px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {/* 3 baris booking contoh */}
+                {[
+                  { pasien: "Alya Putri", treatment: "Facial Deep Cleansing", jadwal: "09:00 - 09:45", bayar: "Tunai", status: "Dikonfirmasi", statusColor: "bg-blue-50 text-blue-600 border-blue-200" },
+                  { pasien: "Budi Santoso", treatment: "Laser Brightening", jadwal: "10:30 - 11:30", bayar: "Kartu Debit", status: "On Progress", statusColor: "bg-purple-50 text-purple-600 border-purple-200" },
+                  { pasien: "Indah Permata", treatment: "Anti-Aging Silk Peel", jadwal: "13:00 - 14:30", bayar: "E-Wallet", status: "Menunggu Pembayaran", statusColor: "bg-amber-50 text-amber-600 border-amber-200" },
+                ].map((row, i) => (
+                  <tr key={i} className="border-b border-slate-50 hover:bg-blue-50/40 transition-colors">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center text-blue-600 font-bold text-xs">
+                          {row.pasien.charAt(0)}
+                        </div>
+                        <span className="font-bold text-slate-800">{row.pasien}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 font-semibold text-slate-700">{row.treatment}</td>
+                    <td className="px-6 py-4 text-slate-500">{row.jadwal}</td>
+                    <td className="px-6 py-4">
+                      <span className="flex items-center gap-1.5 text-xs font-bold text-slate-600">
+                        <FaWallet size={11} className="text-emerald-500" /> {row.bayar}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full border ${row.statusColor}`}>
+                        {row.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 

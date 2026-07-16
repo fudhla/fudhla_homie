@@ -12,4 +12,5 @@ export default defineConfig({
       "@": path.resolve("./src"),
     },
   },
+  // SPA fallback built-in di Vite (appType: 'spa' adalah default)
 });
